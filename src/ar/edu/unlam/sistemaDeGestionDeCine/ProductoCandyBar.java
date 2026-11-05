@@ -12,6 +12,13 @@ public abstract class ProductoCandyBar implements Vendible{
 		this.precio = precio;
 		this.stock = stock;
 	}
+	
+	public void descontarStock(Integer cantidad) throws StockInsuficienteException {
+		if (this.stock < cantidad) {
+			throw new StockInsuficienteException("Stock insuficiente para el producto: " + this.nombreProducto);
+		}
+		this.stock -= cantidad;
+	}
 
 	public String getNombreProducto() {
 		return nombreProducto;

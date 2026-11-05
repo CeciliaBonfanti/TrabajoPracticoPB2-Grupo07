@@ -21,4 +21,8 @@ public class Cine {
     public Integer obtenerStockProducto(ProductoCandyBar producto) {
         return producto.getStock();
     }
+    
+    public void venderProducto(ProductoCandyBar producto) throws StockInsuficienteException {
+		producto.descontarStock(1);
+	}
 }

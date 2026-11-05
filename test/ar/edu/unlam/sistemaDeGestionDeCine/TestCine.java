@@ -105,5 +105,63 @@ public class TestCine {
 			
 			assertEquals(precioEsperado, precioObtenido, 0.0);
 		}
+		
+		// 11. Validar que al vender un producto simple (Bebida/Golosina), el sistema descuente 1 unidad de su stock. (BONFANTI)
+		@Test
+		public void queAlVenderUnProductoSimpleSeDescuenteUnaUnidadDeSuStock() throws StockInsuficienteException {
+			Cine cine = new Cine();
+			
+			String idProducto = "BEB-01";
+			String nombreProducto = "Coca-Cola";
+			Double precio = 2500.0;
+			Integer stockInicial = 10;
+			ProductoCandyBar bebida = new Bebida(idProducto, nombreProducto, precio, stockInicial);
+			
+			cine.registrarProducto(bebida);
+			
+			cine.venderProducto(bebida);
+			
+			Integer stockEsperado = 9;
+			Integer stockObtenido = cine.obtenerStockProducto(bebida);
+			
+			assertEquals(stockEsperado, stockObtenido);
+		}
+		
+		// 12. Validar que al vender un Combo, el sistema descuente stock a todos los productos individuales que lo componen. (BONFANTI)
+		@Test
+		public void queAlVenderUnComboSeDescuenteStockATodosLosProductosComponentes() throws StockInsuficienteException {
+			Cine cine = new Cine();
+			
+			ProductoCandyBar bebida = new Bebida("BEB-01", "Coca-Cola", 2500.0, 10);
+			ProductoCandyBar golosina = new Golosina("GOL-01", "Pipas", 1000.0, 5);
+			
+			Combo combo = new Combo("CMB-01", "Combo Pareja", 10.0);
+			combo.agregarProducto(bebida);
+			combo.agregarProducto(golosina);
+			
+			cine.registrarProducto(bebida);
+			cine.registrarProducto(golosina);
+			cine.registrarProducto(combo);
+			
+			cine.venderProducto(combo);
+			
+			assertEquals(Integer.valueOf(9), cine.obtenerStockProducto(bebida));
+			assertEquals(Integer.valueOf(4), cine.obtenerStockProducto(golosina));
+		}
+		
+		// 13. (Excepción) Validar el lanzamiento de StockInsuficienteException al vender un producto con stock cero. (BONFANTI)
+		@Test(expected = StockInsuficienteException.class)
+		public void queAlVenderUnProductoSinStockLanceStockInsuficienteException() throws StockInsuficienteException {
+			Cine cine = new Cine();
+			
+			String idProducto = "BEB-01";
+			String nombreProducto = "Coca-Cola";
+			Double precio = 2500.0;
+			Integer stockInicial = 0;
+			ProductoCandyBar bebida = new Bebida(idProducto, nombreProducto, precio, stockInicial);
+			
+			cine.registrarProducto(bebida);
+			cine.venderProducto(bebida);
+		}
 
 }

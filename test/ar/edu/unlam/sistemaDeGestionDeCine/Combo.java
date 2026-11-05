@@ -17,6 +17,19 @@ public class Combo extends ProductoCandyBar {
 	public void agregarProducto(ProductoCandyBar producto) {
 		this.productos.add(producto);
 	}
+	@Override
+	public void descontarStock(Integer cantidad) throws StockInsuficienteException {
+		//Primero verificamos que TODOS los componentes tengan stock suficiente
+		for (ProductoCandyBar producto : productos) {
+			if (producto.getStock() < cantidad) {
+				throw new StockInsuficienteException("Stock insuficiente en el combo para: " + producto.getNombreProducto());
+			}
+		}
+		//Si todos tienen stock, descontamos 1 unidad a cada uno
+		for (ProductoCandyBar producto : productos) {
+			producto.descontarStock(cantidad);
+		}
+	}
 
 	@Override
 	public Double calcularPrecioVenta() {
