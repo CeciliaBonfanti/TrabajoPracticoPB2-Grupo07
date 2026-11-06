@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class TestCine {
-
+	//2(Orozco)
 	@Test
 	public void deberiaCrearEntradaAsignandoFuncionYAsientoEIncrementandoIdAutoincremental() {
 		Pelicula pelicula = new Pelicula("Avengers");
@@ -29,6 +29,7 @@ public class TestCine {
 		assertEquals("El código de la segunda entrada debe ser 2", Integer.valueOf(2), entrada2.getCodigo());
 	}
 
+	//3(Orozco)
 	@Test
 	public void deberiaCalcularPrecioBaseDeEntradaEstandarCorrectamente() {
 		Pelicula pelicula = new Pelicula("Batman");
@@ -41,6 +42,7 @@ public class TestCine {
 				entradaEstandar.calcularPrecioVenta());
 	}
 
+	//4(Orozco)
 	@Test
 	public void deberiaCalcularPrecioDeEntradaConRecargoAplicandoAumento() {
 		Pelicula pelicula = new Pelicula("Avatar");
@@ -54,6 +56,7 @@ public class TestCine {
 				entradaRecargo.calcularPrecioVenta());
 	}
 
+	//5(Orozco)
 	@Test
 	public void deberiaCalcularPrecioDeEntradaConDescuentoAplicandoRebaja() {
 		Pelicula pelicula = new Pelicula("Avatar");
@@ -67,6 +70,7 @@ public class TestCine {
 				entradaDescuento.calcularPrecioVenta());
 	}
 
+	//17(Orozco)
 	@Test
 	public void deberiaBuscarTicketExitosamentePorCodigoEnElMap() {
 		Cine cine = new Cine("Multiplex");
@@ -87,6 +91,7 @@ public class TestCine {
 		System.out.println("hola");
 	}
 
+	//18(Orozco)
 	@Test(expected = TicketInexistenteException.class)
 	public void deberiaLanzarTicketInexistenteExceptionAlBuscarCodigoInvalido() {
 		Cine cine = new Cine("Multiplex");
