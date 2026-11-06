@@ -1,7 +1,12 @@
 package ar.edu.unlam.sistemaDeGestionDeCine;
 
+
 import java.util.HashMap;
 import java.util.Map;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Cine {
 	
@@ -27,4 +32,28 @@ public class Cine {
         return this.boleteria.get(codigo);
     }
     
+
+
+    private List<ProductoCandyBar> productos;
+
+    public Cine() {
+        this.productos = new ArrayList<>();
+    }
+
+    public Boolean registrarProducto(ProductoCandyBar producto) {
+        return this.productos.add(producto);
+    }
+
+    public Double obtenerPrecioProducto(ProductoCandyBar producto) {
+        return producto.calcularPrecioVenta();
+    }
+    
+    public Integer obtenerStockProducto(ProductoCandyBar producto) {
+        return producto.getStock();
+    }
+    
+    public void venderProducto(ProductoCandyBar producto) throws StockInsuficienteException {
+		producto.descontarStock(1);
+	}
 }
+
