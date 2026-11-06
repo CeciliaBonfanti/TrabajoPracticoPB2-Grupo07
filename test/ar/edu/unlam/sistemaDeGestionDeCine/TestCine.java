@@ -84,6 +84,7 @@ public class TestCine {
 
 		assertNotNull("El ticket encontrado no debe ser nulo", encontrada);
 		assertEquals("El código del ticket debe coincidir", entrada.getCodigo(), encontrada.getCodigo());
+		System.out.println("hola");
 	}
 
 	@Test(expected = TicketInexistenteException.class)
