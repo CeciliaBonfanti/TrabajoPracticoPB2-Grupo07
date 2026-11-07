@@ -9,15 +9,19 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.TreeSet;
 
-
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestCine {
-
+	@Before
+	public void setUp() {
+	    // Reiniciamos el contador estático para que cada test arranque con el ID 1
+	    Entrada.reiniciarContador();
 	
+	}
 
-
-// 1
+	// 1
+	@Test
 	public void queSePuedaCrearUnaFuncion() {
 
 		Pelicula pelicula = new Pelicula("Venom");
@@ -51,7 +55,7 @@ public class TestCine {
 		assertEquals("El código de la segunda entrada debe ser 2", Integer.valueOf(2), entrada2.getCodigo());
 	}
 
-	//3(Orozco)
+	//3(Orozco) 
 	@Test
 	public void deberiaCalcularPrecioBaseDeEntradaEstandarCorrectamente() {
 		Pelicula pelicula = new Pelicula("Batman");
@@ -92,61 +96,68 @@ public class TestCine {
 				entradaDescuento.calcularPrecioVenta());
 	}
 
-	//17(Orozco)
-	@Test
-	public void deberiaBuscarTicketExitosamentePorCodigoEnElMap() {
-		Cine cine = new Cine("Multiplex");
-		Pelicula pelicula = new Pelicula("Spider-Man");
-		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.of(19, 0), 150);
-		Asiento asiento = new Asiento(2, 4);
-
-		Entrada entrada = new EntradaEstandar(funcion, asiento, 2500.0);
-
-		// Registramos la entrada en el cine (la guarda en el Map)
-		cine.registrarEntrada(entrada);
-
-		// Buscamos el ticket por su código autoincremental
-		Entrada encontrada = cine.buscarTicket(entrada.getCodigo());
-
-		assertNotNull("El ticket encontrado no debe ser nulo", encontrada);
-		assertEquals("El código del ticket debe coincidir", entrada.getCodigo(), encontrada.getCodigo());
-		System.out.println("hola");
-	}
-
-	//18(Orozco)
-	@Test(expected = TicketInexistenteException.class)
-	public void deberiaLanzarTicketInexistenteExceptionAlBuscarCodigoInvalido() {
-		Cine cine = new Cine("Multiplex");
-
-		// Intentamos buscar un código numérico falso que no fue registrado
-		cine.buscarTicket(999);
-	}
 	
 	//15
+	@Test
 	public void queLosAsientosSeOrdenenCorrectamente() {
 
-		TreeSet<Asiento> asientos = new TreeSet<>();
+		Pelicula pelicula = new Pelicula("Venom");
+	    Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.now(), 100);
 
-		asientos.add(new Asiento(5, 1));
-		asientos.add(new Asiento(2, 1));
-		asientos.add(new Asiento(8, 1));
+	    funcion.agregarAsiento(new Asiento(5, 1));
+	    funcion.agregarAsiento(new Asiento(2, 1));
+	    funcion.agregarAsiento(new Asiento(8, 1));
 
-		Asiento primero = asientos.first();
-
-		assertEquals(Integer.valueOf(2), primero.getFila());
+	    // Obtenemos el primer elemento del TreeSet interno de la función
+	    Asiento primero = funcion.getSala().first();
+	    
+	    assertEquals(Integer.valueOf(2), primero.getFila());
 	}
 
 	//16	
 	@Test
 	public void queNoSePuedaAgregarDosVecesLaMismaButaca() {
 
-		TreeSet<Asiento> asientos = new TreeSet<>();
+		Pelicula pelicula = new Pelicula("Venom");
+	    Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.now(), 100);
 
-		asientos.add(new Asiento(1, 1));
-		asientos.add(new Asiento(1, 1));
+	    // Intentamos agregar exactamente la misma butaca dos veces
+	    funcion.agregarAsiento(new Asiento(1, 1));
+	    funcion.agregarAsiento(new Asiento(1, 1));
 
-		assertEquals(1, asientos.size());
+	    // El tamaño de la sala debe ser 1 porque el TreeSet rechaza duplicados
+	    assertEquals(1, funcion.getSala().size());
 	}
+	
+	//17(Orozco)
+		@Test
+		public void deberiaBuscarTicketExitosamentePorCodigoEnElMap() {
+			Cine cine = new Cine("Multiplex");
+			Pelicula pelicula = new Pelicula("Spider-Man");
+			Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.of(19, 0), 150);
+			Asiento asiento = new Asiento(2, 4);
+
+			Entrada entrada = new EntradaEstandar(funcion, asiento, 2500.0);
+
+			cine.registrarEntrada(entrada);
+
+			// Buscamos el ticket por su código autoincremental
+			Entrada encontrada = cine.buscarTicket(entrada.getCodigo());
+
+			assertNotNull("El ticket encontrado no debe ser nulo", encontrada);
+			assertEquals("El código del ticket debe coincidir", entrada.getCodigo(), encontrada.getCodigo());
+			
+		}
+
+		//18(Orozco) 
+		@Test(expected = TicketInexistenteException.class)
+		public void deberiaLanzarTicketInexistenteExceptionAlBuscarCodigoInvalido() {
+			Cine cine = new Cine("Multiplex");
+
+			// Intentamos buscar un código que no fue registrado
+			cine.buscarTicket(999);
+		}
+		
 
 	//19	
 	@Test(expected = AsientoYaVendidoException.class)

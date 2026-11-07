@@ -26,6 +26,10 @@ private static Integer contadorCodigos = 1; // Para el autoincremental
     public Asiento getAsiento() {
         return asiento;
     }
+    
+    public static void reiniciarContador() {
+        contadorCodigos = 1; // Resetear el estático
+    }
 
     // El método calcularPrecioVenta queda abstracto o implementado según convenga
     @Override

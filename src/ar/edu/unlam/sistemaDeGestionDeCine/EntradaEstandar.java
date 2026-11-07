@@ -10,8 +10,8 @@ public class EntradaEstandar extends Entrada {
 
 	@Override
 	public Double calcularPrecioVenta() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return this.precioBase;
 	}
 
 }
