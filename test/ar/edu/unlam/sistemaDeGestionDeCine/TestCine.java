@@ -11,6 +11,7 @@ import org.junit.Test;
 public class TestCine {
 
 // 1
+	@Test
 	public void queSePuedaCrearUnaFuncion() {
 
 		Pelicula pelicula = new Pelicula("Venom");
