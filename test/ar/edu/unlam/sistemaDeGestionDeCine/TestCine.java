@@ -2,15 +2,23 @@ package ar.edu.unlam.sistemaDeGestionDeCine;
 
 import static org.junit.Assert.*;
 
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.TreeSet;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestCine {
+	@Before
+	public void setUp() {
+		// Reiniciamos el contador estático para que cada test arranque con el ID 1
+		Entrada.reiniciarContador();
 
-// 1
+	}
+
+	// 1
 	@Test
 	public void queSePuedaCrearUnaFuncion() {
 
@@ -23,34 +31,131 @@ public class TestCine {
 		assertNotNull(funcion.getHora());
 	}
 
-//15
+	// 2(Orozco)
+	@Test
+	public void deberiaCrearEntradaAsignandoFuncionYAsientoEIncrementandoIdAutoincremental() {
+		Pelicula pelicula = new Pelicula("Avengers");
+		LocalDate fecha = LocalDate.now();
+		LocalTime hora = LocalTime.of(18, 0);
+		Funcion funcion = new Funcion(pelicula, fecha, hora, 100);
+
+		Asiento asiento1 = new Asiento(1, 1);
+		Asiento asiento2 = new Asiento(1, 2);
+
+		Entrada entrada1 = new EntradaEstandar(funcion, asiento1, 1500.0);
+		Entrada entrada2 = new EntradaEstandar(funcion, asiento2, 1500.0);
+
+		assertNotNull("La entrada 1 no debe ser nula", entrada1);
+		assertEquals("La función debe coincidir", funcion, entrada1.getFuncion());
+		assertEquals("El asiento debe coincidir", asiento1, entrada1.getAsiento());
+
+		assertEquals("El código de la primera entrada debe ser 1", Integer.valueOf(1), entrada1.getCodigo());
+		assertEquals("El código de la segunda entrada debe ser 2", Integer.valueOf(2), entrada2.getCodigo());
+	}
+
+	// 3(Orozco)
+	@Test
+	public void deberiaCalcularPrecioBaseDeEntradaEstandarCorrectamente() {
+		Pelicula pelicula = new Pelicula("Batman");
+		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.of(20, 0), 120);
+		Asiento asiento = new Asiento(2, 5);
+
+		Entrada entradaEstandar = new EntradaEstandar(funcion, asiento, 2000.0);
+
+		assertEquals("El precio de venta debe ser el precio base", Double.valueOf(2000.0),
+				entradaEstandar.calcularPrecioVenta());
+	}
+
+	// 4(Orozco)
+	@Test
+	public void deberiaCalcularPrecioDeEntradaConRecargoAplicandoAumento() {
+		Pelicula pelicula = new Pelicula("Avatar");
+		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.of(21, 0), 100);
+		Asiento asiento = new Asiento(1, 3);
+
+		// Precio base 1000.0 con 20% de recargo -> Debe dar 1200.0
+		Entrada entradaRecargo = new EntradaConRecargo(funcion, asiento, 1000.0, 20.0);
+
+		assertEquals("El precio con recargo debe ser correcto", Double.valueOf(1200.0),
+				entradaRecargo.calcularPrecioVenta());
+	}
+
+	// 5(Orozco)
+	@Test
+	public void deberiaCalcularPrecioDeEntradaConDescuentoAplicandoRebaja() {
+		Pelicula pelicula = new Pelicula("Avatar");
+		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.of(21, 0), 100);
+		Asiento asiento = new Asiento(1, 4);
+
+		// Precio base 1000.0 con 15% de descuento -> Debe dar 850.0
+		Entrada entradaDescuento = new EntradaConDescuento(funcion, asiento, 1000.0, 15.0);
+
+		assertEquals("El precio con descuento debe ser correcto", Double.valueOf(850.0),
+				entradaDescuento.calcularPrecioVenta());
+	}
+
+	// 15
 	@Test
 	public void queLosAsientosSeOrdenenCorrectamente() {
 
-		TreeSet<Asiento> asientos = new TreeSet<>();
+		Pelicula pelicula = new Pelicula("Venom");
+		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.now(), 100);
 
-		asientos.add(new Asiento(5, 1));
-		asientos.add(new Asiento(2, 1));
-		asientos.add(new Asiento(8, 1));
+		funcion.agregarAsiento(new Asiento(5, 1));
+		funcion.agregarAsiento(new Asiento(2, 1));
+		funcion.agregarAsiento(new Asiento(8, 1));
 
-		Asiento primero = asientos.first();
+		// Obtenemos el primer elemento del TreeSet interno de la función
+		Asiento primero = funcion.getSala().first();
 
 		assertEquals(Integer.valueOf(2), primero.getFila());
 	}
 
-//16	
+	// 16
 	@Test
 	public void queNoSePuedaAgregarDosVecesLaMismaButaca() {
 
-		TreeSet<Asiento> asientos = new TreeSet<>();
+		Pelicula pelicula = new Pelicula("Venom");
+		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.now(), 100);
 
-		asientos.add(new Asiento(1, 1));
-		asientos.add(new Asiento(1, 1));
+		// Intentamos agregar exactamente la misma butaca dos veces
+		funcion.agregarAsiento(new Asiento(1, 1));
+		funcion.agregarAsiento(new Asiento(1, 1));
 
-		assertEquals(1, asientos.size());
+		// El tamaño de la sala debe ser 1 porque el TreeSet rechaza duplicados
+		assertEquals(1, funcion.getSala().size());
 	}
 
-//19	
+	// 17(Orozco)
+	@Test
+	public void deberiaBuscarTicketExitosamentePorCodigoEnElMap() {
+		Cine cine = new Cine("Multiplex");
+		Pelicula pelicula = new Pelicula("Spider-Man");
+		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.of(19, 0), 150);
+		Asiento asiento = new Asiento(2, 4);
+
+		Entrada entrada = new EntradaEstandar(funcion, asiento, 2500.0);
+
+		cine.registrarEntrada(entrada);
+
+		// Buscamos el ticket por su código autoincremental
+		Entrada encontrada = cine.buscarTicket(entrada.getCodigo());
+
+		assertNotNull("El ticket encontrado no debe ser nulo", encontrada);
+		assertEquals("El código del ticket debe coincidir", entrada.getCodigo(), encontrada.getCodigo());
+
+	}
+
+	// 18(Orozco)
+	@Test(expected = TicketInexistenteException.class)
+	public void deberiaLanzarTicketInexistenteExceptionAlBuscarCodigoInvalido() {
+		Cine cine = new Cine("Multiplex");
+
+		// Intentamos buscar un código que no fue registrado
+		cine.buscarTicket(999);
+	}
+
+	// 19
 	@Test(expected = AsientoYaVendidoException.class)
 	public void queNoSePuedaVenderUnAsientoOcupado() throws AsientoYaVendidoException {
 
@@ -63,7 +168,7 @@ public class TestCine {
 		}
 	}
 
-//20
+	// 20
 	@Test(expected = FuncionAgotadaException.class)
 	public void queNoSePuedanVenderMasEntradasQueLaCapacidadDeLaFuncion() throws FuncionAgotadaException {
 
@@ -80,7 +185,6 @@ public class TestCine {
 	}
 
 	@Test
-
 	public void queSePuedaRegistrarUnaBebidaEnElCine() {
 		Cine cine = new Cine();
 

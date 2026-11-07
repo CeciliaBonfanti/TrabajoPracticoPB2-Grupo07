@@ -40,6 +40,10 @@ public class Funcion {
 	public TreeSet<Asiento> getSala() {
 		return this.sala;
 	}
+	
+	public void agregarAsiento(Asiento asiento) {
+	    this.sala.add(asiento);
+	}
 
 	public void venderEntrada() throws FuncionAgotadaException {
 
