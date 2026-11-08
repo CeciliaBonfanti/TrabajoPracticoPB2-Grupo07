@@ -12,10 +12,14 @@ public class Cine {
 	
 	private String nombre;
     private Map<Integer, Entrada> boleteria; 
+    private List<Vendible> carrito;
+    private List<ProductoCandyBar> productos;
 
     public Cine(String nombre) {
         this.nombre = nombre;
         this.boleteria = new HashMap<>();
+        this.productos = new ArrayList<>();
+        this.carrito = new ArrayList<>();
     }
     
     public void registrarEntrada(Entrada entrada) {
@@ -33,11 +37,6 @@ public class Cine {
     
 
 
-    private List<ProductoCandyBar> productos;
-
-    public Cine() {
-        this.productos = new ArrayList<>();
-    }
 
     public Boolean registrarProducto(ProductoCandyBar producto) {
         return this.productos.add(producto);
@@ -53,6 +52,32 @@ public class Cine {
     
     public void venderProducto(ProductoCandyBar producto) throws StockInsuficienteException {
 		producto.descontarStock(1);
+	}
+
+	public List<Vendible> getCarrito() {
+		return this.carrito;
+	}
+	
+	
+	
+	
+
+	public void agregarAlCarrito(Vendible vendible) {
+		this.carrito.add(vendible);
+		
+	}
+
+	public void sacarDelCarrito(Vendible vendible) {
+		this.carrito.remove(vendible);
+		
+	}
+
+	public double calcularTotalCarrito() {
+		double total = 0.0;
+	    for (Vendible producto : this.carrito) {
+	        total += producto.calcularPrecioVenta();
+	    }
+	    return total;
 	}
 }
 

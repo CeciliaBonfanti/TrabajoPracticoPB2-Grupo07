@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 
 import org.junit.Before;
@@ -22,9 +24,7 @@ public class TestCine {
 	@Test
 	public void queSePuedaCrearUnaFuncion() {
 
-		Pelicula pelicula = new Pelicula("Venom");
-
-		Funcion funcion = new Funcion(pelicula, LocalDate.of(2026, 11, 18), LocalTime.of(18, 30), 5);
+		Funcion funcion = new Funcion("Venom", LocalDate.of(2026, 11, 18), LocalTime.of(18, 30), 5);
 
 		assertNotNull(funcion.getPelicula());
 		assertNotNull(funcion.getFecha());
@@ -34,7 +34,7 @@ public class TestCine {
 	// 2(Orozco)
 	@Test
 	public void deberiaCrearEntradaAsignandoFuncionYAsientoEIncrementandoIdAutoincremental() {
-		Pelicula pelicula = new Pelicula("Avengers");
+		String pelicula = "Avengers";
 		LocalDate fecha = LocalDate.now();
 		LocalTime hora = LocalTime.of(18, 0);
 		Funcion funcion = new Funcion(pelicula, fecha, hora, 100);
@@ -56,8 +56,7 @@ public class TestCine {
 	// 3(Orozco)
 	@Test
 	public void deberiaCalcularPrecioBaseDeEntradaEstandarCorrectamente() {
-		Pelicula pelicula = new Pelicula("Batman");
-		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.of(20, 0), 120);
+		Funcion funcion = new Funcion("Batman", LocalDate.now(), LocalTime.of(20, 0), 120);
 		Asiento asiento = new Asiento(2, 5);
 
 		Entrada entradaEstandar = new EntradaEstandar(funcion, asiento, 2000.0);
@@ -69,8 +68,7 @@ public class TestCine {
 	// 4(Orozco)
 	@Test
 	public void deberiaCalcularPrecioDeEntradaConRecargoAplicandoAumento() {
-		Pelicula pelicula = new Pelicula("Avatar");
-		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.of(21, 0), 100);
+		Funcion funcion = new Funcion("Avatar", LocalDate.now(), LocalTime.of(21, 0), 100);
 		Asiento asiento = new Asiento(1, 3);
 
 		// Precio base 1000.0 con 20% de recargo -> Debe dar 1200.0
@@ -83,8 +81,7 @@ public class TestCine {
 	// 5(Orozco)
 	@Test
 	public void deberiaCalcularPrecioDeEntradaConDescuentoAplicandoRebaja() {
-		Pelicula pelicula = new Pelicula("Avatar");
-		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.of(21, 0), 100);
+		Funcion funcion = new Funcion("Avatar", LocalDate.now(), LocalTime.of(21, 0), 100);
 		Asiento asiento = new Asiento(1, 4);
 
 		// Precio base 1000.0 con 15% de descuento -> Debe dar 850.0
@@ -93,13 +90,76 @@ public class TestCine {
 		assertEquals("El precio con descuento debe ser correcto", Double.valueOf(850.0),
 				entradaDescuento.calcularPrecioVenta());
 	}
+	
+	//10
+	@Test
+	public void agregarUnVendibleDeberiaAumentarLaLista() {
+		
+		Cine miCine= new Cine("Ramon");
+		
+		assertEquals(0,miCine.getCarrito().size());
+		
+		Vendible bebida = new Bebida("BEB-01","Coca",1500.0,10);
+		
+		miCine.agregarAlCarrito(bebida);
+		
+		assertEquals(1,miCine.getCarrito().size());
+		
+		
+	}
+	
+	//21
+	@Test
+	public void sacarUnVendibleDeberiaDisminuirLaLista() {
+		
+		Cine miCine= new Cine("Ramon");
+		
+		Vendible bebida = new Bebida("BEB-01","Coca",1500.0,10);
+		
+		miCine.agregarAlCarrito(bebida);
+		
+		assertEquals(1,miCine.getCarrito().size());
+		
+		miCine.sacarDelCarrito(bebida);
+		
+		assertEquals(0,miCine.getCarrito().size());
+		
+	}
+	
+	//14
+	@Test
+	public void elCarritoDeberiaSumarCorrectamenteElPrecioTotalDeDiferentesProducto() {
+		Cine miCine= new Cine("Ramon");
+		
+		Funcion funcion = new Funcion("Venom", LocalDate.now(), LocalTime.now(), 100);
+		
+		Asiento asiento = new Asiento(1, 1);
+		
+		Entrada entradaRecargo = new EntradaConRecargo(funcion, asiento, 15000.0, 20.0);
+		
+		ProductoCandyBar golosina= new Golosina("GOL-01","chocolate",2000.0,10);
+		
+		ProductoCandyBar bebida = new Bebida("BEB-01","Coca",1500.0,10);
+		
+		Combo combo = new Combo("CMB-01", "Combo Pareja", 10.0);
+		combo.agregarProducto(bebida);
+		combo.agregarProducto(golosina);
+		
+		miCine.agregarAlCarrito(entradaRecargo);
+		miCine.agregarAlCarrito(bebida);
+		miCine.agregarAlCarrito(golosina);
+		miCine.agregarAlCarrito(combo);
+		
+		assertEquals(24650.0,miCine.calcularTotalCarrito(),0.01);
+		
+		
+	}
 
 	// 15
 	@Test
 	public void queLosAsientosSeOrdenenCorrectamente() {
 
-		Pelicula pelicula = new Pelicula("Venom");
-		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.now(), 100);
+		Funcion funcion = new Funcion("Venom", LocalDate.now(), LocalTime.now(), 100);
 
 		funcion.agregarAsiento(new Asiento(5, 1));
 		funcion.agregarAsiento(new Asiento(2, 1));
@@ -115,8 +175,7 @@ public class TestCine {
 	@Test
 	public void queNoSePuedaAgregarDosVecesLaMismaButaca() {
 
-		Pelicula pelicula = new Pelicula("Venom");
-		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.now(), 100);
+		Funcion funcion = new Funcion("Venom", LocalDate.now(), LocalTime.now(), 100);
 
 		// Intentamos agregar exactamente la misma butaca dos veces
 		funcion.agregarAsiento(new Asiento(1, 1));
@@ -130,8 +189,7 @@ public class TestCine {
 	@Test
 	public void deberiaBuscarTicketExitosamentePorCodigoEnElMap() {
 		Cine cine = new Cine("Multiplex");
-		Pelicula pelicula = new Pelicula("Spider-Man");
-		Funcion funcion = new Funcion(pelicula, LocalDate.now(), LocalTime.of(19, 0), 150);
+		Funcion funcion = new Funcion("Spider-Man", LocalDate.now(), LocalTime.of(19, 0), 150);
 		Asiento asiento = new Asiento(2, 4);
 
 		Entrada entrada = new EntradaEstandar(funcion, asiento, 2500.0);
@@ -172,9 +230,7 @@ public class TestCine {
 	@Test(expected = FuncionAgotadaException.class)
 	public void queNoSePuedanVenderMasEntradasQueLaCapacidadDeLaFuncion() throws FuncionAgotadaException {
 
-		Pelicula pelicula = new Pelicula("Avengers");
-
-		Funcion funcion = new Funcion(pelicula, LocalDate.of(2026, 11, 18), LocalTime.of(18, 30), 3);
+		Funcion funcion = new Funcion("Avengers", LocalDate.of(2026, 11, 18), LocalTime.of(18, 30), 3);
 
 		funcion.venderEntrada();
 		funcion.venderEntrada();
@@ -186,7 +242,7 @@ public class TestCine {
 
 	@Test
 	public void queSePuedaRegistrarUnaBebidaEnElCine() {
-		Cine cine = new Cine();
+		Cine cine = new Cine("Ramon");
 
 		String idProducto = "BEB-01";
 		String nombreProducto = "Coca-Cola";
@@ -202,7 +258,7 @@ public class TestCine {
 	// correctamente. (BONFANTI)
 	@Test
 	public void queUnaBebidaDevuelvaSuPrecioBaseCorrectamente() {
-		Cine cine = new Cine();
+		Cine cine = new Cine("Ramon");
 
 		String idProducto = "BEB-01";
 		String nombreProducto = "Coca-Cola";
@@ -220,7 +276,7 @@ public class TestCine {
 	// correctamente.(BONFANTI)
 	@Test
 	public void queSePuedaRegistrarUnaGolosinaEnElCine() {
-		Cine cine = new Cine();
+		Cine cine = new Cine("Ramon");
 
 		String idProducto = "GOL-01";
 		String nombreProducto = "M&M";
@@ -234,7 +290,7 @@ public class TestCine {
 
 	@Test
 	public void queUnaGolosinaDevuelvaSuPrecioBaseCorrectamente() {
-		Cine cine = new Cine();
+		Cine cine = new Cine("Ramon");
 
 		String idProducto = "GOL-01";
 		String nombreProducto = "M&M";
@@ -252,7 +308,7 @@ public class TestCine {
 	// correctamente. (BONFANTI)
 	@Test
 	public void queSePuedaObtenerElStockInicialDeUnProductoCandyBar() {
-		Cine cine = new Cine();
+		Cine cine = new Cine("Ramon");
 
 		String idProducto = "BEB-01";
 		String nombreProducto = "Coca-Cola";
@@ -270,7 +326,7 @@ public class TestCine {
 	// aplicando el descuento. (BONFANTI)
 	@Test
 	public void queUnComboCalculeSuPrecioSumandoSusProductosYAplicandoElDescuento() {
-		Cine cine = new Cine();
+		Cine cine = new Cine("Ramon");
 
 		ProductoCandyBar bebida = new Bebida("BEB-01", "Coca-Cola", 2000.0, 10);
 		ProductoCandyBar golosina = new Golosina("GOL-01", "Pipas", 1000.0, 10);
@@ -292,7 +348,7 @@ public class TestCine {
 	// descuente 1 unidad de su stock. (BONFANTI)
 	@Test
 	public void queAlVenderUnProductoSimpleSeDescuenteUnaUnidadDeSuStock() throws StockInsuficienteException {
-		Cine cine = new Cine();
+		Cine cine = new Cine("Ramon");
 
 		String idProducto = "BEB-01";
 		String nombreProducto = "Coca-Cola";
@@ -314,7 +370,7 @@ public class TestCine {
 	// productos individuales que lo componen. (BONFANTI)
 	@Test
 	public void queAlVenderUnComboSeDescuenteStockATodosLosProductosComponentes() throws StockInsuficienteException {
-		Cine cine = new Cine();
+		Cine cine = new Cine("Ramon");
 
 		ProductoCandyBar bebida = new Bebida("BEB-01", "Coca-Cola", 2500.0, 10);
 		ProductoCandyBar golosina = new Golosina("GOL-01", "Pipas", 1000.0, 5);
@@ -337,7 +393,7 @@ public class TestCine {
 	// vender un producto con stock cero. (BONFANTI)
 	@Test(expected = StockInsuficienteException.class)
 	public void queAlVenderUnProductoSinStockLanceStockInsuficienteException() throws StockInsuficienteException {
-		Cine cine = new Cine();
+		Cine cine = new Cine("Ramon");
 
 		String idProducto = "BEB-01";
 		String nombreProducto = "Coca-Cola";

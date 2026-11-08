@@ -6,7 +6,7 @@ import java.util.TreeSet;
 
 public class Funcion {
 
-	private Pelicula pelicula;
+	private String pelicula;
 	private LocalDate fecha;
 	private LocalTime hora;
 	private Integer entradasVendidas;
@@ -14,7 +14,7 @@ public class Funcion {
 
 	private TreeSet<Asiento> sala;
 
-	public Funcion(Pelicula pelicula, LocalDate fecha, LocalTime hora, Integer capacidadMaxima) {
+	public Funcion(String pelicula, LocalDate fecha, LocalTime hora, Integer capacidadMaxima) {
 
 		this.pelicula = pelicula;
 		this.fecha = fecha;
@@ -25,7 +25,7 @@ public class Funcion {
 		this.sala = new TreeSet<>();
 	}
 
-	public Pelicula getPelicula() {
+	public String getPelicula() {
 		return this.pelicula;
 	}
 
