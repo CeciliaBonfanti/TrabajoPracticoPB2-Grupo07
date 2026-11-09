@@ -246,7 +246,7 @@ public class TestCine {
 			assertEquals(Integer.valueOf(4), cine.obtenerStockProducto(golosina));
 		}
 	
-		// 14. (Excepci�n) Validar el lanzamiento de StockInsuficienteException al vender un producto con stock cero.
+		// 14. (Excepción) Validar el lanzamiento de StockInsuficienteException al vender un producto con stock cero.
 		// (BONFANTI)
 		@Test(expected = StockInsuficienteException.class)
 		public void queAlVenderUnProductoSinStockLanceStockInsuficienteException() throws StockInsuficienteException {
